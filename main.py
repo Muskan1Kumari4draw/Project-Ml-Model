@@ -20,10 +20,9 @@ print("NLTK:", nltk.__version__)
 app = Flask(__name__)
 CORS(app)
 
-# Sentiment analysis setup
 sid = SentimentIntensityAnalyzer()
 
-# Load pre-trained models and scalers
+
 with open('irsi_data.pkl', 'rb') as file:
     model_flower = pickle.load(file)
 # with open('salary_model_DTC.pkl', 'rb') as model_file:
@@ -47,13 +46,13 @@ with open('ridge_model.pkl', 'rb') as file:
 def predict():
     data = request.get_json()
     
-    # Convert input data to DataFrame
+  
     inp = pd.DataFrame(data, index=[0])
     
-    # Scale the input data
+   
     scaled_dt = scaler_flower.transform(inp)
     
-    # Make predictions
+   
     prediction = model_flower.predict(scaled_dt)
     
     return jsonify({'species': prediction.tolist()})
@@ -63,12 +62,12 @@ def predict():
 def sentiment_analysis():
     data = request.get_json()
     
-    # Validate input
+   
     review_text = data.get("review")
     if not review_text:
         return jsonify({"error": "No review text provided"}), 400
     
-    # Perform sentiment analysis
+    
     sentiment_scores = sid.polarity_scores(review_text)
     
     return jsonify(sentiment_scores)
@@ -90,7 +89,7 @@ def salary_prediction():
     
     input_data = np.array([[years_experience, age]])
 
-    # Make predictions using all three models
+   
     # dt_prediction = dt_model.predict(input_data)[0]
     lasso_prediction = lasso_model.predict(input_data)[0]
     # ridge_prediction = ridge_model.predict(input_data)[0]
